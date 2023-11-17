@@ -10,6 +10,7 @@ const App = () => {
   const [selectedCards, setSelectedCards] = useState(new Set());
   const [turn, setTurn] = useState(0);
   const [isReady, setIsReady] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (!gameOver && turn === 0) {
@@ -18,7 +19,6 @@ const App = () => {
       shuffleAndSetPokemons();
     }
   }, [gameOver, turn]);
-
 
   const fetchPokemon = async (id) => {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -62,37 +62,32 @@ const App = () => {
 
     if (selectedCards.has(pokemonId)) {
       setGameOver(true); // Termina el juego si la carta ya fue seleccionada
-      setScore(0); // Reinicia la puntuación
+      setShowModal(true);
     } else {
       setSelectedCards(new Set([...selectedCards, pokemonId]));
       setScore(score + 1);
 
       if (turn + 1 >= 10) {
-        endGame(true);
+        setGameOver(true);
+        setShowModal(true);
       } else {
         setTurn(turn + 1); // Avanza al siguiente turno
       }
     }
   };
 
-  const endGame = (win = false) => {
-    setGameOver(true);
-    setScore(win ? score : 0); // Si gana, mantiene el puntaje; si pierde, lo resetea a 0.
-
-    // Reinicia el juego después de un breve retraso
-    setTimeout(() => {
-      setGameOver(false);
-      setSelectedCards(new Set());
-      setTurn(0);
-      setIsReady(false);
-      fetchPokemons();
-    }, 3000); // 3 segundos de retraso antes de reiniciar
+  const endGame = () => {
+    setShowModal(false);
+    setGameOver(false);
+    setSelectedCards(new Set());
+    setTurn(0);
+    setIsReady(false);
+    fetchPokemons();
   };
 
   return (
     <div className="app">
       <div className="score">Points: {score}</div>
-      {gameOver && <div className="game-over">Game Over! Start Again.</div>}
       <div className="card-grid">
         {pokemons.map((pokemon) => (
           <Card
@@ -102,6 +97,14 @@ const App = () => {
           />
         ))}
       </div>
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p>{gameOver ? "Game Over!" : "Congratulations!"}</p>
+            <button onClick={endGame}>Play Again</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
