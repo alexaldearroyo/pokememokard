@@ -12,8 +12,13 @@ const App = () => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    fetchAndShufflePokemons();
-  }, [turn]);
+    if (!gameOver && turn === 0) {
+      fetchPokemons();
+    } else if (!gameOver && turn > 0) {
+      shuffleAndSetPokemons();
+    }
+  }, [gameOver, turn]);
+
 
   const fetchPokemon = async (id) => {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -32,16 +37,24 @@ const App = () => {
     }
   };
 
-  const fetchAndShufflePokemons = async () => {
-    const pokemonPromises = [];
-    for (let i = 0; i < 10; i++) {
+  const fetchPokemons = async () => {
+    const pokemonIDs = new Set();
+    while (pokemonIDs.size < 10) {
       const randomId = Math.floor(Math.random() * 150) + 1;
-      pokemonPromises.push(fetchPokemon(randomId));
+      pokemonIDs.add(randomId);
     }
-    let pokemonData = await Promise.all(pokemonPromises);
-    shuffleArray(pokemonData); // Mezcla las cartas
+  
+    const pokemonPromises = Array.from(pokemonIDs).map(fetchPokemon);
+    const pokemonData = await Promise.all(pokemonPromises);
     setPokemons(pokemonData);
-    setIsReady(true); // Establece que las cartas están listas para ser clickeadas
+    setIsReady(true);
+  };
+  
+
+  const shuffleAndSetPokemons = () => {
+    let shuffledPokemons = [...pokemons];
+    shuffleArray(shuffledPokemons);
+    setPokemons(shuffledPokemons);
   };
 
   const handleCardClick = (pokemonId) => {
@@ -55,12 +68,25 @@ const App = () => {
       setScore(score + 1);
 
       if (turn + 1 >= 10) {
-        // Termina el juego después de 10 turnos exitosos
-        setGameOver(true);
+        endGame(true);
       } else {
         setTurn(turn + 1); // Avanza al siguiente turno
       }
     }
+  };
+
+  const endGame = (win = false) => {
+    setGameOver(true);
+    setScore(win ? score : 0); // Si gana, mantiene el puntaje; si pierde, lo resetea a 0.
+
+    // Reinicia el juego después de un breve retraso
+    setTimeout(() => {
+      setGameOver(false);
+      setSelectedCards(new Set());
+      setTurn(0);
+      setIsReady(false);
+      fetchPokemons();
+    }, 3000); // 3 segundos de retraso antes de reiniciar
   };
 
   return (
