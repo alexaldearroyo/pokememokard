@@ -57,10 +57,10 @@ const App = () => {
   };
 
   const handleCardClick = (cardId) => {
-    if (!isReady) return; // Evita hacer clic si las cartas no están listas
+    if (!isReady) return; // Avoid clicking if the cards are not ready
 
     if (selectedCards.has(cardId)) {
-      setGameOver(true); // Termina el juego si la carta ya fue seleccionada
+      setGameOver(true); // End the game if the card has already been selected
       setShowModal(true);
     } else {
       setSelectedCards(new Set([...selectedCards, cardId]));
@@ -70,7 +70,7 @@ const App = () => {
         setGameOver(true);
         setShowModal(true);
       } else {
-        setTurn(turn + 1); // Avanza al siguiente turno
+        setTurn(turn + 1); // Move to the next turn
       }
     }
   };
