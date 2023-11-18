@@ -4,7 +4,7 @@ import "./App.css";
 import Card from "./Card";
 
 const App = () => {
-  const [pokemons, setPokemons] = useState([]);
+  const [cards, setCards] = useState([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [selectedCards, setSelectedCards] = useState(new Set());
@@ -14,19 +14,19 @@ const App = () => {
 
   useEffect(() => {
     if (!gameOver && turn === 0) {
-      fetchPokemons();
+      fetchCards();
     } else if (!gameOver && turn > 0) {
-      shuffleAndSetPokemons();
+      shuffleAndSetCards();
     }
   }, [gameOver, turn]);
 
-  const fetchPokemon = async (id) => {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  const fetchCard = async (id) => {
+    const response = await fetch(`https://triad.raelys.com/api/cards/${id}`);
     const data = await response.json();
     return {
       id: data.id,
       name: data.name,
-      image: data.sprites.front_default,
+      image: data.image,
     };
   };
 
@@ -37,34 +37,33 @@ const App = () => {
     }
   };
 
-  const fetchPokemons = async () => {
-    const pokemonIDs = new Set();
-    while (pokemonIDs.size < 10) {
+  const fetchCards = async () => {
+    const cardIDs = new Set();
+    while (cardIDs.size < 10) {
       const randomId = Math.floor(Math.random() * 150) + 1;
-      pokemonIDs.add(randomId);
+      cardIDs.add(randomId);
     }
-  
-    const pokemonPromises = Array.from(pokemonIDs).map(fetchPokemon);
-    const pokemonData = await Promise.all(pokemonPromises);
-    setPokemons(pokemonData);
+
+    const cardPromises = Array.from(cardIDs).map(fetchCard);
+    const cardData = await Promise.all(cardPromises);
+    setCards(cardData);
     setIsReady(true);
   };
-  
 
-  const shuffleAndSetPokemons = () => {
-    let shuffledPokemons = [...pokemons];
-    shuffleArray(shuffledPokemons);
-    setPokemons(shuffledPokemons);
+  const shuffleAndSetCards = () => {
+    let shuffledCards = [...cards];
+    shuffleArray(shuffledCards);
+    setCards(shuffledCards);
   };
 
-  const handleCardClick = (pokemonId) => {
+  const handleCardClick = (cardId) => {
     if (!isReady) return; // Evita hacer clic si las cartas no están listas
 
-    if (selectedCards.has(pokemonId)) {
+    if (selectedCards.has(cardId)) {
       setGameOver(true); // Termina el juego si la carta ya fue seleccionada
       setShowModal(true);
     } else {
-      setSelectedCards(new Set([...selectedCards, pokemonId]));
+      setSelectedCards(new Set([...selectedCards, cardId]));
       setScore(score + 1);
 
       if (turn + 1 >= 10) {
@@ -80,20 +79,23 @@ const App = () => {
     setShowModal(false);
     setGameOver(false);
     setSelectedCards(new Set());
+    setScore(0);
     setTurn(0);
     setIsReady(false);
-    fetchPokemons();
+    fetchCards();
   };
 
   return (
     <div className="app">
+      <header className="app-header">Triple Triad Memory</header>
+
       <div className="score">Points: {score}</div>
       <div className="card-grid">
-        {pokemons.map((pokemon) => (
+        {cards.map((card) => (
           <Card
-            key={pokemon.id}
-            pokemon={pokemon}
-            onClick={() => handleCardClick(pokemon.id)}
+            key={card.id}
+            card={card}
+            onClick={() => handleCardClick(card.id)}
           />
         ))}
       </div>
@@ -105,6 +107,16 @@ const App = () => {
           </div>
         </div>
       )}
+      <footer className="app-footer">
+        Alex Arroyo © 2023 -
+        <a
+          href="https://github.com/alexaldearroyo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+      </footer>
     </div>
   );
 };

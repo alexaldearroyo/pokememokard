@@ -1,7 +1,6 @@
 /* Card.css */
 .card {
     cursor: pointer;
-    border: 1px solid #ddd;
     border-radius: 10px;
     padding: 10px;
     text-align: center;
@@ -13,13 +12,14 @@
     transform: scale(1.05);
 }
 
-.pokemon-image {
-    width: 100px;
-    height: 100px;
+.card-image {
+    width: 125px;
+    height: 125px;
     object-fit: contain;
 }
 
-.pokemon-name {
+.card-name {
     margin-top: 10px;
     font-size: 1rem;
+    font-family: 'Merriweather', serif; 
 }

@@ -1,11 +1,11 @@
 import React from 'react';
 import './Card.css'; // Asegúrate de crear y estilizar este archivo CSS
 
-const Card = ({ pokemon, onClick }) => {
+const Card = ({ card, onClick }) => {
     return (
         <div className="card" onClick={onClick}>
-            <img src={pokemon.image} alt={pokemon.name} className="pokemon-image" />
-            <h2 className="pokemon-name">{pokemon.name}</h2>
+            <img src={card.image} alt={card.name} className="card-image" />
+            <h2 className="card-name">{card.name}</h2>
         </div>
     );
 };
