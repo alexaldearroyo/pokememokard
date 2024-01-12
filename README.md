@@ -6,7 +6,7 @@
 
 A memory card game inspired by Final Fantasy's Triple Triad.
 
-![Triple Triad Memory](https://tripletriadmemory.netlify.app/assets/screenshot.png)
+![Triple Triad Memory](./resources/screenshot.png)
 
 ## How to Play
 
