@@ -4,10 +4,10 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 100vh;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #261e1e;
   color: antiquewhite;
-
+  margin: 0;
 }
 
 .app {
@@ -15,7 +15,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   text-align: center;
   overflow-y: hidden;
   overflow-x: hidden;

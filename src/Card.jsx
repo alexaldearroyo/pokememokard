@@ -1,5 +1,5 @@
 import React from 'react';
-import './Card.css'; // Asegúrate de crear y estilizar este archivo CSS
+import './Card.css';
 
 const Card = ({ card, onClick }) => {
     return (
